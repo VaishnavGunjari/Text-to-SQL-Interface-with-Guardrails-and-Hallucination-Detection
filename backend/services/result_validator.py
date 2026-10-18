@@ -1,6 +1,7 @@
 """Result sanity checking after SQL execution."""
 from __future__ import annotations
 from dataclasses import dataclass, field
+import datetime
 from logger import get_logger
 
 logger = get_logger(__name__)

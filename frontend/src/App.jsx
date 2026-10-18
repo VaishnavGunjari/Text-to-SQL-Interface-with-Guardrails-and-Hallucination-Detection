@@ -23,11 +23,19 @@ function LoadingSkeleton() {
 function StatusBanner({ result }) {
   if (!result) return null
   if (result.status === 'blocked') return (
-    <div className="card border-zinc-700 bg-zinc-900/80 flex gap-3 animate-slide-up">
-      <XCircle size={16} className="text-zinc-300 flex-shrink-0 mt-0.5" />
-      <div>
-        <p className="text-sm font-semibold text-white">Query Blocked</p>
-        <p className="text-xs text-zinc-400 mt-0.5 font-mono">{result.error_message}</p>
+    <div className="card border-red-500/40 bg-red-950/20 dark:bg-red-950/30 flex gap-3.5 animate-slide-up p-4 shadow-lg shadow-red-950/10">
+      <div className="w-8 h-8 rounded-lg bg-red-900/40 border border-red-500/30 flex items-center justify-center flex-shrink-0 text-red-400">
+        <XCircle size={18} />
+      </div>
+      <div className="space-y-1">
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-bold text-red-700 dark:text-red-300">Query Blocked by Security Guardrail</p>
+          <span className="badge-red text-[10px] font-mono">AST Security Check</span>
+        </div>
+        <p className="text-xs text-red-600 dark:text-red-200 font-mono">{result.error_message}</p>
+        <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+          Destructive mutations (DROP, DELETE, TRUNCATE, ALTER, INSERT, UPDATE) are blocked before reaching the database.
+        </p>
       </div>
     </div>
   )

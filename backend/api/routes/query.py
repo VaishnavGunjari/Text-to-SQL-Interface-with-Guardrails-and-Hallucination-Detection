@@ -32,9 +32,11 @@ async def run_query(req: QueryRequest):
     timestamp = datetime.now(timezone.utc).isoformat()
 
     # ══ STEP 1: Generate or Accept Custom SQL ═════════════════════════════════
-    if req.custom_sql:
-        sql = req.custom_sql
-        sql_explanation = "User-edited custom SQL query"
+    clean_q = req.question.strip()
+    direct_sql_keywords = ("SELECT ", "DROP ", "DELETE ", "INSERT ", "UPDATE ", "ALTER ", "TRUNCATE ", "CREATE ")
+    if req.custom_sql or any(clean_q.upper().startswith(kw) for kw in direct_sql_keywords):
+        sql = req.custom_sql or clean_q
+        sql_explanation = "Direct / custom SQL query"
         tables_used = []
     else:
         try:
@@ -93,19 +95,24 @@ async def run_query(req: QueryRequest):
     )
 
     if not guardrail.passed:
+        conf = calculate_confidence(guardrail, None, None, None, None)
         qid = save_query({
             "question": req.question,
             "sql": sql,
             "status": "blocked",
             "blocked_reason": guardrail.blocked_reason,
+            "confidence_percentage": conf.percentage,
         })
         return QueryResponse(
             query_id=qid,
             question=req.question,
             status="blocked",
             sql=sql,
+            sql_explanation=sql_explanation,
+            tables_used=tables_used,
             guardrail=guardrail_model,
-            error_message=f"Query blocked: {guardrail.blocked_reason}",
+            confidence=_conf_model(conf),
+            error_message=f"Query blocked by AST Guardrails: {guardrail.blocked_reason}",
             timestamp=timestamp,
         )
 

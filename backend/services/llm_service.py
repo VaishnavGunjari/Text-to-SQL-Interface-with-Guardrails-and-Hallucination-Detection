@@ -200,6 +200,42 @@ def _fallback_generate_json(system_prompt: str, user_message: str) -> dict:
 
     q_lower = question.lower().strip()
 
+    # 0. Adversarial / Destructive Query Check (triggers AST Guardrails)
+    destructive_keywords = ["drop", "delete", "truncate", "alter", "update", "insert", "destroy", "remove table"]
+    if any(k in q_lower for k in destructive_keywords):
+        target_table = "users"
+        for t in ["organizations", "users", "subscriptions", "invoices", "events", "features", "feature_usage"]:
+            if t in q_lower or t.rstrip("s") in q_lower:
+                target_table = t
+                break
+
+        if "drop" in q_lower or "destroy" in q_lower or "remove table" in q_lower:
+            dangerous_sql = f"DROP TABLE {target_table};"
+        elif "delete" in q_lower:
+            if "where" in q_lower or "0" in q_lower:
+                dangerous_sql = f"DELETE FROM {target_table} WHERE mrr = 0;"
+            else:
+                dangerous_sql = f"DELETE FROM {target_table};"
+        elif "truncate" in q_lower:
+            dangerous_sql = f"TRUNCATE TABLE {target_table};"
+        elif "alter" in q_lower:
+            dangerous_sql = f"ALTER TABLE {target_table} DROP COLUMN id;"
+        elif "update" in q_lower:
+            dangerous_sql = f"UPDATE {target_table} SET plan = 'enterprise';"
+        else:
+            dangerous_sql = f"DROP TABLE {target_table};"
+
+        return {
+            "type": "sql",
+            "sql": dangerous_sql,
+            "explanation": f"Attempting destructive DDL/DML operation on table '{target_table}'.",
+            "tables_used": [target_table],
+            "columns_used": [],
+            "confidence_hint": 0.0,
+            "clarification_options": [],
+            "unanswerable_reason": None,
+        }
+
     # 1. Unanswerable check (completely out-of-domain)
     unanswerable_keywords = [
         "weather", "temperature", "forecast", "movie", "film", "actor", "recipe",
