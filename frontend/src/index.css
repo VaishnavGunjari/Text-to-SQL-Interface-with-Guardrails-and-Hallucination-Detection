@@ -1,0 +1,183 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-surface: #000000;
+    --color-surface-card: #09090b;
+    --color-surface-border: #27272a;
+    --color-surface-hover: #141417;
+    --color-surface-muted: #18181b;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #a1a1aa;
+    --color-text-muted: #71717a;
+    --ring-stroke: #ffffff;
+    color-scheme: dark;
+  }
+
+  .light {
+    --color-surface: #ffffff;
+    --color-surface-card: #f8f8fa;
+    --color-surface-border: #e4e4e7;
+    --color-surface-hover: #f1f1f4;
+    --color-surface-muted: #e4e4e7;
+    --color-text-primary: #09090b;
+    --color-text-secondary: #52525b;
+    --color-text-muted: #71717a;
+    --ring-stroke: #09090b;
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255, 255, 255, 0.07) 0%, transparent 70%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  .light body {
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 0, 0, 0.04) 0%, transparent 70%);
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-surface); }
+  ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+  .light ::-webkit-scrollbar-thumb { background: #d4d4d8; }
+  .light ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+
+  ::selection { background: rgba(255, 255, 255, 0.25); color: #ffffff; }
+  .light ::selection { background: rgba(0, 0, 0, 0.15); color: #000000; }
+}
+
+@layer components {
+  .card {
+    background-color: var(--color-surface-card);
+    border: 1px solid var(--color-surface-border);
+    border-radius: 0.875rem;
+    padding: 1.25rem;
+    box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.5);
+  }
+  .light .card {
+    box-shadow: 0 2px 12px -1px rgba(0, 0, 0, 0.04);
+  }
+
+  .card-hover {
+    @apply card transition-all duration-200 hover:border-zinc-500/60 hover:bg-surface-hover;
+  }
+
+  .btn-primary {
+    @apply bg-white hover:bg-zinc-200 text-black font-semibold px-5 py-2.5 rounded-lg
+           transition-all duration-200 flex items-center gap-2 disabled:opacity-35 disabled:cursor-not-allowed
+           focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black
+           shadow-[0_0_20px_rgba(255,255,255,0.12)] active:scale-[0.98];
+  }
+  .light .btn-primary {
+    @apply bg-black hover:bg-zinc-800 text-white focus:ring-black focus:ring-offset-white
+           shadow-[0_0_15px_rgba(0,0,0,0.1)];
+  }
+
+  .btn-ghost {
+    @apply text-zinc-400 hover:text-white hover:bg-surface-hover px-3 py-1.5 rounded-lg
+           transition-all duration-200 flex items-center gap-1.5 text-sm;
+  }
+  .light .btn-ghost {
+    @apply text-zinc-600 hover:text-black hover:bg-zinc-200/80;
+  }
+
+  .btn-secondary {
+    @apply bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-700 font-medium px-4 py-2 rounded-lg
+           transition-all duration-200 flex items-center gap-2 text-xs;
+  }
+  .light .btn-secondary {
+    @apply bg-zinc-100 hover:bg-zinc-200 text-zinc-800 border-zinc-300;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium tracking-wide;
+  }
+  .badge-mono {
+    @apply badge bg-zinc-800/90 text-white border border-zinc-600;
+  }
+  .light .badge-mono {
+    @apply bg-zinc-200 text-black border-zinc-400;
+  }
+
+  .badge-white {
+    @apply badge bg-white text-black font-semibold border border-white;
+  }
+  .light .badge-white {
+    @apply bg-black text-white border-black;
+  }
+
+  .badge-outline {
+    @apply badge bg-transparent text-zinc-300 border border-zinc-700;
+  }
+  .light .badge-outline {
+    @apply text-zinc-700 border-zinc-300;
+  }
+
+  .badge-green {
+    @apply badge bg-zinc-800/90 text-white border border-zinc-500 font-medium;
+  }
+  .light .badge-green {
+    @apply bg-zinc-200 text-black border-zinc-400 font-medium;
+  }
+
+  .badge-red {
+    @apply badge bg-zinc-900 text-zinc-300 border border-zinc-700;
+  }
+  .light .badge-red {
+    @apply bg-zinc-100 text-zinc-700 border-zinc-300;
+  }
+
+  .badge-yellow {
+    @apply badge bg-zinc-800/80 text-zinc-300 border border-zinc-600;
+  }
+  .light .badge-yellow {
+    @apply bg-zinc-100 text-zinc-800 border-zinc-300;
+  }
+
+  .badge-blue {
+    @apply badge bg-zinc-800/90 text-white border border-zinc-600;
+  }
+  .light .badge-blue {
+    @apply bg-zinc-200 text-black border-zinc-400;
+  }
+
+  .badge-gray {
+    @apply badge bg-zinc-900/80 text-zinc-400 border border-zinc-800;
+  }
+  .light .badge-gray {
+    @apply bg-zinc-100 text-zinc-600 border-zinc-200;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent font-bold;
+  }
+  .light .gradient-text {
+    @apply bg-gradient-to-r from-black via-zinc-800 to-zinc-600 bg-clip-text text-transparent font-bold;
+  }
+
+  .signal-bar {
+    @apply h-1.5 rounded-full transition-all duration-700;
+  }
+  .shimmer {
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+  .light .shimmer {
+    background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.04) 50%, transparent 100%);
+    background-size: 200% 100%;
+  }
+}
